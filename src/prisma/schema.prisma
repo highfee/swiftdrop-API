@@ -1,0 +1,153 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  phone     String?
+  name      String
+  password  String
+  role      Role     @default(USER)
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  orders    Order[]
+  addresses Address[]
+
+  @@map("users")
+}
+
+model Address {
+  id       String @id @default(cuid())
+  userId   String
+  type     AddressType
+  street   String
+  city     String
+  state    String
+  zipCode  String
+  country  String @default("USA")
+  isDefault Boolean @default(false)
+
+  // Relations
+  user            User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pickupOrders    Order[] @relation("PickupAddress")
+  deliveryOrders  Order[] @relation("DeliveryAddress")
+
+  @@map("addresses")
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  userId          String
+  pickupAddressId String
+  deliveryAddressId String
+  riderId         String?
+  
+  // Order details
+  itemDescription String
+  itemImage       String?
+  specialInstructions String?
+  estimatedValue  Decimal?    @db.Decimal(10, 2)
+  
+  // Pricing
+  baseFee         Decimal     @db.Decimal(10, 2)
+  deliveryFee     Decimal     @db.Decimal(10, 2)
+  totalAmount     Decimal     @db.Decimal(10, 2)
+  
+  // Status and timing
+  status          OrderStatus @default(PENDING)
+  scheduledPickup DateTime?
+  actualPickup    DateTime?
+  estimatedDelivery DateTime?
+  actualDelivery  DateTime?
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  // Relations
+  user            User        @relation(fields: [userId], references: [id])
+  pickupAddress   Address     @relation("PickupAddress", fields: [pickupAddressId], references: [id])
+  deliveryAddress Address     @relation("DeliveryAddress", fields: [deliveryAddressId], references: [id])
+  rider           Rider?      @relation(fields: [riderId], references: [id])
+  tracking        OrderTracking[]
+
+  @@map("orders")
+}
+
+model Rider {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  phone       String
+  name        String
+  licenseNumber String @unique
+  vehicleType VehicleType
+  vehicleModel String
+  vehiclePlate String
+  isActive    Boolean  @default(true)
+  rating      Decimal? @db.Decimal(3, 2)
+  totalDeliveries Int  @default(0)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  orders      Order[]
+
+  @@map("riders")
+}
+
+model OrderTracking {
+  id        String   @id @default(cuid())
+  orderId   String
+  status    OrderStatus
+  location  String?
+  notes     String?
+  timestamp DateTime @default(now())
+
+  // Relations
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_tracking")
+}
+
+// Enums
+enum Role {
+  USER
+  ADMIN
+  RIDER
+}
+
+enum AddressType {
+  HOME
+  WORK
+  OTHER
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  RIDER_ASSIGNED
+  PICKED_UP
+  IN_TRANSIT
+  DELIVERED
+  CANCELLED
+}
+
+enum VehicleType {
+  BICYCLE
+  MOTORCYCLE
+  CAR
+  VAN
+}
