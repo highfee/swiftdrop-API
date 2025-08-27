@@ -15,7 +15,7 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 // Routes
-app.use("/api", routes);
+app.use("/api/v1", routes);
 
 // Error handling middleware
 app.use(errorHandler);
