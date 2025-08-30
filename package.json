@@ -24,7 +24,6 @@
   "homepage": "https://github.com/Mohammed7997/swiftdrop-API#readme",
   "dependencies": {
     "@prisma/client": "^6.14.0",
-    "@types/cookie-parser": "^1.4.9",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -35,6 +34,7 @@
     "morgan": "^1.10.1"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.9",
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",

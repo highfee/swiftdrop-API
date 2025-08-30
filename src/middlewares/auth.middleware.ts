@@ -25,8 +25,6 @@ export const protect = async (
       token = req.cookies.accessToken;
     }
 
-    console.log(req.cookies);
-
     if (!token) {
       return next(
         new AppError("You are not logged in. Please log in to get access", 401)
@@ -48,7 +46,8 @@ export const protect = async (
     }
 
     // 4) Grant access to protected route
-    req.user = currentUser;
+    const { password, ...userWithoutPassword } = currentUser;
+    req.user = userWithoutPassword;
     next();
   } catch (error) {
     next(new AppError("Not authorized", 401));
