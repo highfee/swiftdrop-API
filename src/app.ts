@@ -12,25 +12,27 @@ const app: express.Application = express();
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(
-//   cors({
-//     origin: "http://localhost:3000", // your frontend origin
-//     credentials: true,
-//   })
-// );
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, false);
-      // Allow any localhost port
-      if (/^http:\/\/localhost:\d+$/.test(origin)) {
-        return callback(null, true);
-      }
-      callback(new Error("Not allowed by CORS"));
-    },
+    origin: "https://swiftdrop.ng", // your frontend origin
     credentials: true,
   })
 );
+
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (!origin) return callback(null, false);
+//       // Allow any localhost port
+//       if (/^http:\/\/localhost:\d+$/.test(origin)) {
+//         return callback(null, true);
+//       }
+//       callback(new Error("Not allowed by CORS"));
+//     },
+//     credentials: true,
+//   })
+// );
+
 app.use(helmet());
 app.use(morgan("dev"));
 
