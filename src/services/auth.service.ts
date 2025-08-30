@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
 import prisma from "../config/db.js";
-import { generateToken } from "../utils/jwt.js";
+import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
 import { AppError } from "../middlewares/error.middleware.js";
 
 export class AuthService {
-  async register(name: string, email: string, password: string) {
+  async register(name: string, email: string, password: string, phone: string) {
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -23,11 +23,17 @@ export class AuthService {
         name,
         email,
         password: hashedPassword,
+        phone,
       },
     });
 
-    // Generate JWT token
-    const token = generateToken({
+    // Generate tokens
+    const accessToken = generateAccessToken({
+      id: user.id,
+      role: user.role,
+      email: user.email,
+    });
+    const refreshToken = generateRefreshToken({
       id: user.id,
       role: user.role,
       email: user.email,
@@ -38,7 +44,8 @@ export class AuthService {
 
     return {
       user: userWithoutPassword,
-      token,
+      accessToken,
+      refreshToken,
     };
   }
 
@@ -59,8 +66,13 @@ export class AuthService {
       throw new AppError("Invalid email or password", 401);
     }
 
-    // Generate JWT token
-    const token = generateToken({
+    // Generate tokens
+    const accessToken = generateAccessToken({
+      id: user.id,
+      role: user.role,
+      email: user.email,
+    });
+    const refreshToken = generateRefreshToken({
       id: user.id,
       role: user.role,
       email: user.email,
@@ -71,7 +83,8 @@ export class AuthService {
 
     return {
       user: userWithoutPassword,
-      token,
+      accessToken,
+      refreshToken,
     };
   }
 }

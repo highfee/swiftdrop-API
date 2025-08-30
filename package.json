@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "node --watch dist/server.js",
     "dev": "ts-node src/server.ts",
     "build": "tsc",
     "lint": "eslint --ext .ts src/",
@@ -24,7 +24,9 @@
   "homepage": "https://github.com/Mohammed7997/swiftdrop-API#readme",
   "dependencies": {
     "@prisma/client": "^6.14.0",
+    "@types/cookie-parser": "^1.4.9",
     "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
@@ -36,6 +38,7 @@
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
+    "@types/helmet": "^4.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.3.0",
