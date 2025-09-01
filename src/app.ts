@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "https://swiftdrop.ng", // your frontend origin
+    origin: ["https://www.swiftdrop.ng"], // your frontend origin
     credentials: true,
   })
 );
