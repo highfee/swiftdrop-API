@@ -8,7 +8,7 @@ const authService = new AuthService();
 const cookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production", // send only over HTTPS in production
-  sameSite: "strict" as const,
+  sameSite: "none" as const,
   // You can set 'domain' and 'path' as needed
 };
 
